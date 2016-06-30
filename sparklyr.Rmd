@@ -30,7 +30,7 @@ This regression will try to predict wine quality based on its pH, alcohol, densi
 
 ```{r, eval = F}
 # Loading local data
-wine <- read.csv("/Users/Josiah/Documents/Dataa/sparklyr_exploration/wine_classification.csv")
+wine <- read.csv("wine_classification.csv")
 # The copy_to function copys the local data frame to a spark data table
 wine_tbl <- copy_to(sc, wine) 
 
@@ -171,7 +171,7 @@ The model I will create will predict loan status, based on the loan ammount, age
 Now lets load our data:
 ```{r, eval = F}
 # load the data 
-loan_data <- readRDS("/Users/Josiah/Documents/Dataa/Data Sets/loan_data.rds")
+loan_data <- readRDS("loan_data.rds")
 loan_data_tbl <- copy_to(sc, loan_data) # copying it to spark
 ```
 Printed are the first 10 rows. 

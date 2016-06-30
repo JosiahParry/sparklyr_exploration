@@ -140,7 +140,7 @@ sc &lt;- spark_connect(master = &quot;local&quot;)</code></pre>
 <p>This will be an example of using Spark’s linear regression model on the classic wine quality data set. The code will compare the output from <em>sparklyr</em> and the base R <code>lm()</code> function.</p>
 <p>This regression will try to predict wine quality based on its pH, alcohol, density, and wine type.</p>
 <pre class="r"><code># Loading local data
-wine &lt;- read.csv(&quot;/Users/Josiah/Documents/Dataa/sparklyr_exploration/wine_classification.csv&quot;)
+wine &lt;- read.csv(&quot;wine_classification.csv&quot;)
 # The copy_to function copys the local data frame to a spark data table
 wine_tbl &lt;- copy_to(sc, wine) 
 
@@ -245,7 +245,7 @@ arrange(spark_kmeans$centers, quality)
 <p>The model I will create will predict loan status, based on the loan ammount, age of borrower, and their employment duration. Loan status is binary where <strong>1</strong> is a default and <strong>0</strong> is a non-default.</p>
 <p>Now lets load our data:</p>
 <pre class="r"><code># load the data 
-loan_data &lt;- readRDS(&quot;/Users/Josiah/Documents/Dataa/Data Sets/loan_data.rds&quot;)
+loan_data &lt;- readRDS(&quot;loan_data.rds&quot;)
 loan_data_tbl &lt;- copy_to(sc, loan_data) # copying it to spark</code></pre>
 <p>Printed are the first 10 rows.</p>
 <pre class="r"><code> loan_status loan_amnt int_rate grade emp_length home_ownership annual_inc   age
