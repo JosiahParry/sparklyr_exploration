@@ -46,4 +46,7 @@ gbt_predict <- sdf_predict(gbt, newdata = partition_tbl$test) %>% collect
 #test
 gbt_predict$prediction
 
-table(gbt_predict$prediction, partition_tbl$test$G3)
+test_g3 <- partition_tbl$test %>% select(G3)
+
+                              
+table(gbt_predict$prediction, test_g3)
