@@ -30,23 +30,22 @@ absences_tbl <- absences_tbl %>% sdf_mutate(p_live_together = ft_string_indexer(
                                             school_index = ft_string_indexer("school"),
                                             sex_index = ft_string_indexer("sex"))
 
-# create gradient boosted trees
-absences_tbl %>%  ml_gradient_boosted_trees(response = "G3",
-                          features = c("p_live_together", "sex_index", "school_index", "studytime", "absences"))
 
 # using sparklyr to partition data
 partition_tbl <- sdf_partition(absences_tbl, training = 0.75, test = 0.25, seed = 0)
 
 # create gradient boosted tree model
 gbt <- partition_tbl$training %>% ml_gradient_boosted_trees(response = "G3",
-                         features = c( "p_live_together", "sex_index", "school_index", "studytime", "absences"))
+                         features = c( "p_live_together", "sex_index", "school_index", "studytime", "absences"),
+                         type = "regression")
 
 gbt_predict <- sdf_predict(gbt, newdata = partition_tbl$test) %>% collect
 
-#test
-gbt_predict$prediction
 
-test_g3 <- partition_tbl$test %>% select(G3)
+true_val <- partition_tbl$test %>% select(G3)
 
-                              
-table(gbt_predict$prediction, test_g3)
+pred_true <- merge(gbt_predict$prediction, true_val)
+
+# evaluation
+sqrt(mean((pred_true$G3 - pred_true$x)^2))
+#awful model lol
