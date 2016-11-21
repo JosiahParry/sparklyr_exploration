@@ -17,7 +17,7 @@ library(sparklyr)
 library(dplyr)
 
 # install spark
-spark_install(version = "1.6.1")
+spark_install(version = "1.6.2")
 # Connecting to spark using spark_connect, on a local connection. 
 sc <- spark_connect(master = "local")
 ```

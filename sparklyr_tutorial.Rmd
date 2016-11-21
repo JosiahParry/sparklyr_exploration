@@ -1,0 +1,69 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(sparklyr)
+library(dplyr)
+sc <- spark_connect(master = "local")
+```
+
+Apache Spark has quickly become and industry leader in big data machine learning tooling. The Apache Spark program has a machine learning library known as MLlib. This library is ran primarily using the apis in the languages Scala, Python, and Java. R has very few methods for using Spark, that is until recently. 
+
+RStudio has recently announced their new R api, sparklyr. This new package gives R users access to Spark's MLlib with a full integration to the dplyr package. Throughout these upcoming exercises you will learn how to use some basic data transformation techniques using dplyr, and how implement machine learning algorithms using MLlib.
+
+Before you can begin working with sparklyr you will need to install sparklyr, and use the function `spark_install()` to install the latest version of spark. 
+
+```{r, eval = F}
+#load sparklyr & dplyr
+devtools::install_github("rstudio/sparklyr")
+library(sparklyr)
+library(dplyr)
+
+# install spark
+spark_install(version = "1.6.2")
+# Connecting to spark using spark_connect, on a local connection. 
+sc <- spark_connect(master = "local")
+```
+
+In order to work with data using spark, it will need to be copied to your spark instance. sparklyr has the function `copy_to()`, which will take an in memory data frame and copy it to your spark instance. 
+
+Load the data:
+```{r}
+wine <- read.csv("/Users/Josiah/Documents/Dataa/sparklyr_exploration/wine_classification.csv")
+wine_tbl <- copy_to(sc, wine)
+```
+
+Now that the wine data is loaded into the spark connection you can preview its structure and first few observations using the `glimpse()` function from dplyr. You should also use the function `head()` to preview the data as well. 
+
+Preview the data:
+```{r}
+glimpse(wine_tbl)
+head(wine_tbl)
+```
+
+Now that you have previewed the data, you have a sense of the structure of the data you are working with. But for these exercises, lets simplify our dataset 6 variables. These are 
+*type, citricAcid, residualSugar, alcohol, quality, and totalSulfurDioxide*. Use  can use dplyr's `select()` function to subset your data and select the variables you wish. However, there is one key function you must use in your pipeline, `collect()`. 
+
+Since sparks computations and transformations are lazy, you need to actually tell it perform the transformations. The `collect()` function does this for you.
+
+```{r}
+wine2_tbl <- wine_tbl %>% select(type, citricAcid, residualSugar, alcohol, quality, totalSulfurDioxide)
+```
+
+Now that the data have been reduced to 6 variables, you can create two subsets, one for each type of wine. In order to do this, you will use the the `filter()` function from dplyr. However, since we are going to create two different tables, one for each type of wine, the variable `type` will no longer be needed. You can deselect `type` by adding `select()` to your pipeline. Also, don't forget to finish each pipeline with the `collect()` function.
+
+Name these two new tables `white_tbl` and `red_tbl`.
+
+```{r}
+white_tbl <- wine2_tbl %>%
+                filter(type == "White") %>%
+                select(- type) %>% collect
+
+red_tbl <- wine2_tbl %>%
+                filter(type == "Red") %>%
+                select(- type) %>% collect
+```
+
+Now 

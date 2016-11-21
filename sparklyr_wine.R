@@ -1,4 +1,4 @@
-install.packages("devtools")
+#install.packages("devtools")
 devtools::install_github("rstudio/sparklyr")
 
 # load sparklyr & install spark
